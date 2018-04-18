@@ -3,7 +3,6 @@ from aimacode.search import Problem
 from aimacode.utils import expr, Expr
 from lp_utils import decode_state
 
-
 class PgNode():
     """Base class for planning graph nodes.
 
@@ -39,7 +38,6 @@ class PgNode():
         print("{} parents".format(len(self.parents)))
         print("{} children".format(len(self.children)))
         print("{} mutex".format(len(self.mutex)))
-
 
 class PgNode_s(PgNode):
     """A planning graph node representing a state (literal fluent) from a
@@ -97,10 +95,8 @@ class PgNode_s(PgNode):
         self.__hash = self.__hash or hash(self.symbol) ^ hash(self.is_pos)
         return self.__hash
 
-
 class PgNode_a(PgNode):
     """A-type (action) Planning Graph node - inherited from PgNode """
-
 
     def __init__(self, action: Action):
         """A-level Planning Graph node constructor
@@ -175,9 +171,9 @@ class PgNode_a(PgNode):
                 self.action.args == other.action.args)
 
     def __hash__(self):
-        self.__hash = self.__hash or hash(self.action.name) ^ hash(self.action.args)
+        self.__hash = self.__hash or hash(
+            self.action.name) ^ hash(self.action.args)
         return self.__hash
-
 
 def mutexify(node1: PgNode, node2: PgNode):
     """ adds sibling nodes to each other's mutual exclusion (mutex) set. These should be sibling nodes!
@@ -191,7 +187,6 @@ def mutexify(node1: PgNode, node2: PgNode):
         raise TypeError('Attempted to mutex two nodes of different types')
     node1.mutex.add(node2)
     node2.mutex.add(node1)
-
 
 class PlanningGraph():
     """
@@ -214,7 +209,8 @@ class PlanningGraph():
         self.problem = problem
         self.fs = decode_state(state, problem.state_map)
         self.serial = serial_planning
-        self.all_actions = self.problem.actions_list + self.noop_actions(self.problem.state_map)
+        self.all_actions = self.problem.actions_list + \
+            self.noop_actions(self.problem.state_map)
         self.s_levels = []
         self.a_levels = []
         self.create_graph()
@@ -242,9 +238,11 @@ class PlanningGraph():
         """
         action_list = []
         for fluent in literal_list:
-            act1 = Action(expr("Noop_pos({})".format(fluent)), ([fluent], []), ([fluent], []))
+            act1 = Action(expr("Noop_pos({})".format(fluent)),
+                          ([fluent], []), ([fluent], []))
             action_list.append(act1)
-            act2 = Action(expr("Noop_neg({})".format(fluent)), ([], [fluent]), ([], [fluent]))
+            act2 = Action(expr("Noop_neg({})".format(fluent)),
+                          ([], [fluent]), ([], [fluent]))
             action_list.append(act2)
         return action_list
 

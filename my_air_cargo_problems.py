@@ -11,7 +11,6 @@ from my_planning_graph import PlanningGraph
 
 from functools import lru_cache
 
-
 class AirCargoProblem(Problem):
     def __init__(self, cargos, planes, airports, initial: FluentState, goal: list):
         """
@@ -186,11 +185,9 @@ def air_cargo_p1() -> AirCargoProblem:
             ]
     return AirCargoProblem(cargos, planes, airports, init, goal)
 
-
 def air_cargo_p2() -> AirCargoProblem:
     # TODO implement Problem 2 definition
     pass
-
 
 def air_cargo_p3() -> AirCargoProblem:
     # TODO implement Problem 3 definition
