@@ -52,6 +52,20 @@ class AirCargoProblem(Problem):
         # for example, the action schema 'Load(c, p, a)' can represent the concrete actions 'Load(C1, P1, SFO)'
         # or 'Load(C2, P2, JFK)'.  The actions for the planning problem must be concrete because the problems in
         # forward search and Planning Graphs must use Propositional Logic
+        loads = []
+        for cargo in self.cargos:
+            for plane in self.planes:
+                for airport in self.airports:
+                    precond_pos = [expr("At({}, {})".format(cargo, airport)),
+                    expr("At({}, {})".format(plane, airport))]
+                    precond_neg = []
+                    effect_add = [expr("In({}, {})".format(cargo, plane))]
+                    effect_rem = [expr("At({}, {})".format(cargo, airport))]
+                    load = Action(expr("Load({}, {}, {})".format(cargo, plane, airport)),
+                    [precond_pos, precond_neg],
+                    [effect_add, effect_rem])
+                    loads.append(load)
+            return loads
 
         def load_actions():
             """Create all concrete Load actions and return a list
@@ -60,6 +74,7 @@ class AirCargoProblem(Problem):
             """
             loads = []
             # TODO create all load ground actions from the domain Load action
+
             return loads
 
         def unload_actions():
@@ -69,6 +84,7 @@ class AirCargoProblem(Problem):
             """
             unloads = []
             # TODO create all Unload ground actions from the domain Unload action
+
             return unloads
 
         def fly_actions():
@@ -103,6 +119,7 @@ class AirCargoProblem(Problem):
         :return: list of Action objects
         """
         # TODO implement
+
         possible_actions = []
         return possible_actions
 
@@ -116,6 +133,7 @@ class AirCargoProblem(Problem):
         :return: resulting state after action
         """
         # TODO implement
+
         new_state = FluentState([], [])
         return encode_state(new_state, self.state_map)
 
@@ -157,6 +175,7 @@ class AirCargoProblem(Problem):
         executed.
         """
         # TODO implement (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
+        
         count = 0
         return count
 
@@ -187,8 +206,10 @@ def air_cargo_p1() -> AirCargoProblem:
 
 def air_cargo_p2() -> AirCargoProblem:
     # TODO implement Problem 2 definition
+
     pass
 
 def air_cargo_p3() -> AirCargoProblem:
     # TODO implement Problem 3 definition
+
     pass
