@@ -52,21 +52,7 @@ class AirCargoProblem(Problem):
         # for example, the action schema 'Load(c, p, a)' can represent the concrete actions 'Load(C1, P1, SFO)'
         # or 'Load(C2, P2, JFK)'.  The actions for the planning problem must be concrete because the problems in
         # forward search and Planning Graphs must use Propositional Logic
-        loads = []
-        for cargo in self.cargos:
-            for plane in self.planes:
-                for airport in self.airports:
-                    precond_pos = [expr("At({}, {})".format(cargo, airport)),
-                    expr("At({}, {})".format(plane, airport))]
-                    precond_neg = []
-                    effect_add = [expr("In({}, {})".format(cargo, plane))]
-                    effect_rem = [expr("At({}, {})".format(cargo, airport))]
-                    load = Action(expr("Load({}, {}, {})".format(cargo, plane, airport)),
-                    [precond_pos, precond_neg],
-                    [effect_add, effect_rem])
-                    loads.append(load)
-            return loads
-
+        
         def load_actions():
             """Create all concrete Load actions and return a list
 
@@ -79,13 +65,14 @@ class AirCargoProblem(Problem):
                 for plane in self.planes:
                     for airport in self.airports:
                         precond_pos = [expr("At({}, {})".format(cargo, airport)),
-                            expr("At({}, {})".format(plane, airport))]
+                                       expr("At({}, {})".format(plane, airport))]
                         precond_neg = []
                         effect_add = [expr("In({}, {})".format(cargo, plane))]
-                        effect_rem = [expr("At({}, {})".format(cargo, airport))]
+                        effect_rem = [
+                            expr("At({}, {})".format(cargo, airport))]
                         load = Action(expr("Load({}, {}, {})".format(cargo, plane, airport)),
-                            [precond_pos, precond_neg],
-                            [effect_add, effect_rem])
+                                      [precond_pos, precond_neg],
+                                      [effect_add, effect_rem])
                         loads.append(load)
             return loads
 
@@ -146,11 +133,13 @@ class AirCargoProblem(Problem):
         kb = PropKB()
         kb.tell(decode_state(state, self.state_map).pos_sentence())
         possible_actions = []
-        
+
         for action in self.actions_list:
-            
-            is_positive_preconds = set(action.precond_pos).issubset(set(kb.clauses))
-            is_negative_preconds = not bool(set(action.precond_neg).intersection(set(kb.clauses)))
+
+            is_positive_preconds = set(
+                action.precond_pos).issubset(set(kb.clauses))
+            is_negative_preconds = not bool(
+                set(action.precond_neg).intersection(set(kb.clauses)))
             if is_positive_preconds and is_negative_preconds:
                 possible_actions.append(action)
         return possible_actions
@@ -165,10 +154,10 @@ class AirCargoProblem(Problem):
         :return: resulting state after action
         """
 
-        # TODO implement       
+        # TODO implement
         new_state = FluentState([], [])
         old_state = decode_state(state, self.state_map)
-        
+
         for fluent in old_state.pos:
             if fluent not in action.effect_rem:
                 new_state.pos.append(fluent)
@@ -180,7 +169,7 @@ class AirCargoProblem(Problem):
                 new_state.neg.append(fluent)
         for fluent in action.effect_rem:
             if fluent not in new_state.neg:
-                new_state.neg.append(fluent)        
+                new_state.neg.append(fluent)
         return encode_state(new_state, self.state_map)
 
     def goal_test(self, state: str) -> bool:
@@ -224,7 +213,7 @@ class AirCargoProblem(Problem):
         count = 0
         kb = PropKB()
         kb.tell(decode_state(node.state, self.state_map).pos_sentence())
-        
+
         for clause in self.goal:
             if clause not in kb.clauses:
                 count += 1
@@ -254,6 +243,7 @@ def air_cargo_p1() -> AirCargoProblem:
             expr('At(C2, SFO)'),
             ]
     return AirCargoProblem(cargos, planes, airports, init, goal)
+
 
 def air_cargo_p2() -> AirCargoProblem:
     # TODO implement Problem 2 definition
@@ -296,6 +286,7 @@ def air_cargo_p2() -> AirCargoProblem:
             ]
 
     return AirCargoProblem(cargos, planes, airports, init, goal)
+
 
 def air_cargo_p3() -> AirCargoProblem:
     # TODO implement Problem 3 definition
